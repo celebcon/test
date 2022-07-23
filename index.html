@@ -1,0 +1,317 @@
+<html>
+
+<style>
+p.a {
+  white-space: pre;
+  color: white;
+}
+</style>
+
+<body style="background-color:black;">
+
+<canvas id="myCanvas" onload = 'move()' onclick = "clickfunc()" width="800" height="450" style=" padding-left: 0;
+    padding-right: 0;
+	
+    margin-left: auto;
+    margin-right: auto;
+	margin-top: 0px;
+    display: block;border:3px solid white;">
+</canvas>
+
+</body>
+
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+ctx.font = "16px Arial";
+
+var canvasX = 0; 
+var canvasY = 0; 
+canvas.addEventListener("mousemove", function(e) { 
+    var cRect = canvas.getBoundingClientRect();              // Gets the CSS positions along with width/height
+    canvasX = Math.round(e.clientX - cRect.left);        // Subtract the 'left' of the canvas from the X/Y
+    canvasY = Math.round(e.clientY - cRect.top);         // positions to get make (0,0) the top left of the    
+});
+
+
+var map = function(scene) {
+	this.scene = scene;
+};
+
+map.prototype.draw = function() {	
+	if (scene == 0){
+		ctx.drawImage(mapimg,0 - transx,0 - transy,1600,800);
+		ctx.drawImage(maparrows,0,0,800,400);
+		
+		ctx.font = "900 20px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "left";
+		ctx.fillText("x: " + transx,10,20); ctx.fillText("y: " + transy,10,40);
+		
+
+		transymark = locy*400;
+		transxmark = locx*800;
+
+		if (transy < transymark){
+			if (transymark - transy <= 1){transy = transymark;}
+			else{transy+=(transymark-transy)/5;}
+		}
+		
+		if (transy > transymark){
+			if (transy - transymark <= 1){transy = transymark;}
+			else{transy-=(transy-transymark)/5;}
+		}
+		
+		if (transx < transxmark){
+			if (transxmark - transx <= 1){transx = transxmark;}
+			else{transx+=(transxmark-transx)/5;}
+		}
+		
+		if (transx > transxmark){
+			if (transx - transxmark <= 1){transx = transxmark;}
+			else{transx-=(transx-transxmark)/5;}
+		}
+	}
+
+};
+
+var cinfo = function(name,x,y) {
+	this.name = name;
+	this.x = x; 
+	this.y = y;
+	this.opendoorw = 0;
+	this.txtwidth = 28;
+	this.celebImage = new Image(100, 200);
+	this.txtImage = new Image(100, 200);
+}
+
+cinfo.prototype.draw = function() {
+	if (scene == 0){
+		//Pic
+		this.celebImage.src = 'celebs/' + this.name + '.png';
+		ctx.drawImage(this.celebImage,this.x - transx + 246,this.y - transy + 122,120,160);
+		
+		//Wrapper
+		ctx.drawImage(mappopup,this.x - transx,this.y - transy,800,400);
+		
+		//Text Adjust, Write
+		if (this.name.length == 12){this.txtwidth = 28;}
+		if (this.name.length == 15){this.txtwidth = 25;}
+		if (this.name.length == 18){this.txtwidth = 21;}
+		ctx.font = "700 " + String(this.txtwidth) + "px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
+		ctx.fillText(this.name,this.x - transx+306,this.y - transy+115);
+		
+		//Debug
+		ctx.fillText(this.name.length,this.x - transx+306,this.y - transy+205);
+		ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 200,this.y - transy + 90,210,200);
+
+		
+	}//End Scene 0 cinfo
+	
+	if (scene == 1 && sendName == this.name){
+		ctx.drawImage(doorbg,0,0,800,400);
+		
+		ctx.drawImage(doorsolo,0 + this.opendoorw/1.7,0,800- this.opendoorw,400);
+		if (opendoor == 1){
+			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 790){fade = 1; sendScene = 0; opendoor = 0;}
+		}
+	
+		this.celebImage.src = 'celebs/' + this.name + '.png';
+		ctx.drawImage(this.celebImage,28,75,180,240);
+		
+		ctx.drawImage(doorwrapper,0,0,800,400);
+		
+		this.txtImage.src = "door/txt/2.png";
+		ctx.drawImage(this.txtImage,0,0,800,400);
+		
+	}//End Scene 1 cinfo
+}
+
+
+var mapArray = [];
+var cinfoArray = [];
+
+mapArray.push(new map(0));
+
+cinfoArray.push(new cinfo("Selena Gomez",120,-20));
+cinfoArray.push(new cinfo("Scarlett Johansson",920,-5));
+cinfoArray.push(new cinfo("Ana de Armas",900,420));
+cinfoArray.push(new cinfo("Milana Vayntrub",10,410));
+
+//for(var i = 0; i < mapArray.length ; i++) {
+function clickfunc(){
+
+	if (scene == 0){
+		//UP
+		if (canvasX > 350 && canvasX < 444 && canvasY > 0 && canvasY < 81){locy -= 1;}
+		
+		//Down
+		if (canvasX > 350 && canvasX < 444 && canvasY > 317 && canvasY < 400){locy += 1;}
+		
+		//Left
+		if (canvasX > 0 && canvasX < 75 && canvasY > 160 && canvasY < 240){locx -= 1;}
+		
+		//Right
+		if (canvasX > 720 && canvasX < 800 && canvasY > 160 && canvasY < 240){locx += 1;}
+		
+		//House Select
+		for(var i = 0; i < cinfoArray.length ; i++) {
+			if (canvasX > cinfoArray[i].x - transx + 200 && canvasX < cinfoArray[i].x - transx + 200 + 210 && canvasY > cinfoArray[i].y - transy + 90 && canvasY < cinfoArray[i].y - transy + 290){fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;}
+		}
+	}
+	
+	if (scene == 1){
+		//Open Door
+		if (canvasX > 270 && canvasX < 490 && canvasY > 20 && canvasY < 320){opendoor = 1;}
+	
+	}
+	
+
+}//End clickfunc
+
+var myVar = setInterval(move, 20);
+
+var scene = 0; 
+var points = 10;
+
+var transx = 0;
+var transy = 0;
+var transxmark = 0;
+var transymark = 0;
+var locx = 0;
+var locy = 0;
+
+var shiftX = 0;
+var shiftY = 0;
+
+var printout = "";
+var fade = 0;
+
+var brightFac = 0; 
+var sendScene = 0;
+var sendName = "";
+
+var errormsgshow = 0;
+var errorTimer = 0;
+var errormsg = "";
+var errortextsize = 30;
+
+var opendoor = 0;
+
+function move() {
+
+//BG
+ctx.fillStyle = "green";
+ctx.fillRect(0,0, 800, 400);
+
+//Prototypes
+for(var i = 0; i < mapArray.length ; i++) {
+        mapArray[i].draw();
+}
+
+for(var i = 0; i < cinfoArray.length ; i++) {
+        cinfoArray[i].draw();
+}
+
+
+//Bottom Info
+ctx.fillStyle = "gray";
+ctx.fillRect(0,400, 800, 400);
+
+
+ctx.font = "20px Arial"; ctx.fillStyle = "white"; ctx.textAlign = "left";
+ctx.fillText("X: " + canvasX,4,420);
+ctx.fillText("Y: " + canvasY,3,440);
+
+ctx.fillText("shiftX: " + shiftX,220,420);
+ctx.fillText("shiftY: " + shiftY,220,440);
+
+ctx.fillText("Scene: " + scene,80,420);
+ctx.fillText("Points: " + points,80,440);
+
+ctx.fillText("sendName: " + sendName,350,420);
+ctx.fillText("sendScene: " + sendScene,350,440);
+
+document.getElementById("demo").innerHTML = printout; 
+
+
+//Error
+if (errormsgshow == 1){
+	errorTimer++;
+	if (errorTimer < 2){ctx.drawImage(error20,0,0,800,400);} else if (errorTimer < 4){ctx.drawImage(error40,0,0,800,400);} else if (errorTimer < 6){ctx.drawImage(error60,0,0,800,400);}
+	else if (errorTimer < 100){
+		ctx.drawImage(error80,0,0,800,400);
+		ctx.font = "900 " + String(errortextsize) + "px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
+		ctx.fillText(errormsg,400,210);		
+	}
+	else if (errorTimer < 102){ctx.drawImage(error60,0,0,800,400);} else if (errorTimer < 104){ctx.drawImage(error40,0,0,800,400);} else if (errorTimer < 106){ctx.drawImage(error20,0,0,800,400); errorTimer = 0; errormsgshow = 0;}
+}
+
+//Fade
+if (fade == 1){brightFac += 10;
+	if (brightFac < 10){ctx.drawImage(black10,0,0,800,400);}
+	if (brightFac >= 10 && brightFac < 20){ctx.drawImage(black10,0,0,800,400);}
+	if (brightFac >= 20 && brightFac < 30){ctx.drawImage(black20,0,0,800,400);}
+	if (brightFac >= 30 && brightFac < 40){ctx.drawImage(black30,0,0,800,400);}
+	if (brightFac >= 40 && brightFac < 50){ctx.drawImage(black40,0,0,800,400);}
+	if (brightFac >= 50 && brightFac < 60){ctx.drawImage(black50,0,0,800,400);}
+	if (brightFac >= 60 && brightFac < 70){ctx.drawImage(black60,0,0,800,400);}
+	if (brightFac >= 70 && brightFac < 80){ctx.drawImage(black70,0,0,800,400);}
+	if (brightFac >= 80 && brightFac < 90){ctx.drawImage(black80,0,0,800,400);}
+	if (brightFac >= 90 && brightFac < 100){ctx.drawImage(black90,0,0,800,400);}
+	if (brightFac >= 100 && brightFac < 110){ctx.drawImage(black100,0,0,800,400);}
+	if (brightFac >= 110){ctx.drawImage(black100,0,0,800,400); fade = 2; scene = sendScene;}
+}
+
+if (fade == 2){brightFac -= 20;
+	if (brightFac < 10){ctx.drawImage(black10,0,0,800,400);}
+	if (brightFac >= 10 && brightFac < 20){ctx.drawImage(black10,0,0,800,400);}
+	if (brightFac >= 20 && brightFac < 30){ctx.drawImage(black20,0,0,800,400);}
+	if (brightFac >= 30 && brightFac < 40){ctx.drawImage(black30,0,0,800,400);}
+	if (brightFac >= 40 && brightFac < 50){ctx.drawImage(black40,0,0,800,400);}
+	if (brightFac >= 50 && brightFac < 60){ctx.drawImage(black50,0,0,800,400);}
+	if (brightFac >= 60 && brightFac < 70){ctx.drawImage(black60,0,0,800,400);}
+	if (brightFac >= 70 && brightFac < 80){ctx.drawImage(black70,0,0,800,400);}
+	if (brightFac >= 80 && brightFac < 90){ctx.drawImage(black80,0,0,800,400);}
+	if (brightFac >= 90 && brightFac < 100){ctx.drawImage(black90,0,0,800,400);}
+	if (brightFac >= 100 && brightFac < 110){ctx.drawImage(black100,0,0,800,400);}
+	if (brightFac < 10){ctx.drawImage(black10,0,0,800,400); fade = 0; brightFac = 0; }
+}
+
+}//End of FUNCTION
+
+
+</script>
+
+<p class="a" id = "demo" value = ""></p>
+
+<img id="mapimg"  style="display:none; visibility:hidden;" src="map/map.png" alt="">
+<img id="maparrows"  style="display:none; visibility:hidden;" src="map/arrows.png" alt="">
+<img id="mappopup"  style="display:none; visibility:hidden;" src="map/popup.png" alt="">
+
+<img id="doorbg"  style="display:none; visibility:hidden;" src="door/bg.png" alt="">
+<img id="doorwrapper"  style="display:none; visibility:hidden;" src="door/wrapper.png" alt="">
+<img id="doorsolo"  style="display:none; visibility:hidden;" src="door/solo.png" alt="">
+
+<img id="error20"  style="display:none; visibility:hidden;" src="fade/error20.png" alt="">
+<img id="error40"  style="display:none; visibility:hidden;" src="fade/error40.png" alt="">
+<img id="error60"  style="display:none; visibility:hidden;" src="fade/error60.png" alt="">
+<img id="error80"  style="display:none; visibility:hidden;" src="fade/error80.png" alt="">
+
+<img id="black10"  style="display:none; visibility:hidden;" src="fade/black10.png" alt="">
+<img id="black20"  style="display:none; visibility:hidden;" src="fade/black20.png" alt="">
+<img id="black30"  style="display:none; visibility:hidden;" src="fade/black30.png" alt="">
+<img id="black40"  style="display:none; visibility:hidden;" src="fade/black40.png" alt="">
+<img id="black50"  style="display:none; visibility:hidden;" src="fade/black50.png" alt="">
+<img id="black60"  style="display:none; visibility:hidden;" src="fade/black60.png" alt="">
+<img id="black70"  style="display:none; visibility:hidden;" src="fade/black70.png" alt="">
+<img id="black80"  style="display:none; visibility:hidden;" src="fade/black80.png" alt="">
+<img id="black90"  style="display:none; visibility:hidden;" src="fade/black90.png" alt="">
+<img id="black100"  style="display:none; visibility:hidden;" src="fade/black100.png" alt="">
+</html> 
+
+
+
+
+
+
+
