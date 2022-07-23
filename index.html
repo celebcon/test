@@ -82,6 +82,8 @@ var cinfo = function(name,x,y) {
 	this.txtwidth = 28;
 	this.celebImage = new Image(100, 200);
 	this.txtImage = new Image(100, 200);
+	
+	this.dist = 100;
 }
 
 cinfo.prototype.draw = function() {
@@ -100,9 +102,21 @@ cinfo.prototype.draw = function() {
 		ctx.font = "700 " + String(this.txtwidth) + "px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
 		ctx.fillText(this.name,this.x - transx+306,this.y - transy+115);
 		
+		//Distance text
+		ctx.font = "700 30px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
+		ctx.fillText(this.dist + " km",this.x - transx + 322,this.y - transy + 310);
+		
+		//Dist calc
+		this.dist = Math.pow(Math.pow(carx - transx - this.x,2) + Math.pow(cary - transy - this.y,2),0.5);
+		this.dist = (this.dist/20).toFixed(0);
+		
+		//CAR
+		ctx.drawImage(mapcar,carx - transx - 300,cary - transy, 150, 75);
+		
 		//Debug
 		ctx.fillText(this.name.length,this.x - transx+306,this.y - transy+205);
-		ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 200,this.y - transy + 90,210,200);
+		//ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 200,this.y - transy + 90,210,200);
+
 
 		
 	}//End Scene 0 cinfo
@@ -134,7 +148,7 @@ mapArray.push(new map(0));
 
 cinfoArray.push(new cinfo("Selena Gomez",120,-20));
 cinfoArray.push(new cinfo("Scarlett Johansson",920,-5));
-cinfoArray.push(new cinfo("Ana de Armas",900,420));
+cinfoArray.push(new cinfo("Ana de Armas",900,410));
 cinfoArray.push(new cinfo("Milana Vayntrub",10,410));
 
 //for(var i = 0; i < mapArray.length ; i++) {
@@ -155,7 +169,11 @@ function clickfunc(){
 		
 		//House Select
 		for(var i = 0; i < cinfoArray.length ; i++) {
-			if (canvasX > cinfoArray[i].x - transx + 200 && canvasX < cinfoArray[i].x - transx + 200 + 210 && canvasY > cinfoArray[i].y - transy + 90 && canvasY < cinfoArray[i].y - transy + 290){fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;}
+			if (canvasX > cinfoArray[i].x - transx + 200 && canvasX < cinfoArray[i].x - transx + 200 + 210 && canvasY > cinfoArray[i].y - transy + 90 && canvasY < cinfoArray[i].y - transy + 290){
+				fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;
+				carx = cinfoArray[i].x + 200; 
+				cary = cinfoArray[i].y + 200;
+			}
 		}
 	}
 	
@@ -196,6 +214,9 @@ var errormsg = "";
 var errortextsize = 30;
 
 var opendoor = 0;
+
+var carx = 504;
+var cary = 184;
 
 function move() {
 
@@ -287,6 +308,7 @@ if (fade == 2){brightFac -= 20;
 <img id="mapimg"  style="display:none; visibility:hidden;" src="map/map.png" alt="">
 <img id="maparrows"  style="display:none; visibility:hidden;" src="map/arrows.png" alt="">
 <img id="mappopup"  style="display:none; visibility:hidden;" src="map/popup.png" alt="">
+<img id="mapcar"  style="display:none; visibility:hidden;" src="map/car.png" alt="">
 
 <img id="doorbg"  style="display:none; visibility:hidden;" src="door/bg.png" alt="">
 <img id="doorwrapper"  style="display:none; visibility:hidden;" src="door/wrapper.png" alt="">
