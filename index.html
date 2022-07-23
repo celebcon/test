@@ -107,15 +107,26 @@ cinfo.prototype.draw = function() {
 		ctx.fillText(this.dist + " km",this.x - transx + 322,this.y - transy + 310);
 		
 		//Dist calc
-		this.dist = Math.pow(Math.pow(carx - transx - this.x,2) + Math.pow(cary - transy - this.y,2),0.5);
-		this.dist = (this.dist/20).toFixed(0);
+		this.dist = Math.pow(Math.pow( (carx + 90) - (this.x + 290) ,2) + Math.pow( (cary) - (this.y + 199) ,2),0.5);
+		this.dist = (this.dist/100).toFixed(1);
+		
+
 		
 		//CAR
-		ctx.drawImage(mapcar,carx - transx - 300,cary - transy, 150, 75);
+		ctx.fillStyle = "black";
+		ctx.drawImage(mapcar,carx - transx,cary - transy - 50, 75, 130);
 		
 		//Debug
 		ctx.fillText(this.name.length,this.x - transx+306,this.y - transy+205);
 		//ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 200,this.y - transy + 90,210,200);
+		
+			//Car mark
+			ctx.fillStyle = "red";
+			ctx.fillRect(carx - transx + 90,cary - transy,30,30);
+			
+			//Center of pic mark
+			ctx.fillStyle = "blue";
+			ctx.fillRect(this.x - transx + 290,this.y - transy + 199,30,30);
 
 
 		
@@ -126,7 +137,7 @@ cinfo.prototype.draw = function() {
 		
 		ctx.drawImage(doorsolo,0 + this.opendoorw/1.7,0,800- this.opendoorw,400);
 		if (opendoor == 1){
-			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 790){fade = 1; sendScene = 0; opendoor = 0;}
+			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 10){fade = 1; sendScene = 0; opendoor = 0;}
 		}
 	
 		this.celebImage.src = 'celebs/' + this.name + '.png';
@@ -215,8 +226,8 @@ var errortextsize = 30;
 
 var opendoor = 0;
 
-var carx = 504;
-var cary = 184;
+var carx = 0;
+var cary = 0;
 
 function move() {
 
