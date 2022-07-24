@@ -9,7 +9,7 @@ p.a {
 
 <body style="background-color:black;">
 
-<canvas id="myCanvas" onload = 'move()' onclick = "clickfunc()" width="800" height="450" style=" padding-left: 0;
+<canvas id="myCanvas" onload = 'move()' onclick = "clickfunc()" width="800" height="500" style=" padding-left: 0;
     padding-right: 0;
 	
     margin-left: auto;
@@ -43,10 +43,6 @@ map.prototype.draw = function() {
 	if (scene == 0){
 		ctx.drawImage(mapimg,0 - transx,0 - transy,1600,800);
 		ctx.drawImage(maparrows,0,0,800,400);
-		
-		ctx.font = "900 20px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "left";
-		ctx.fillText("x: " + transx,10,20); ctx.fillText("y: " + transy,10,40);
-		
 
 		transymark = locy*400;
 		transxmark = locx*800;
@@ -92,10 +88,37 @@ var cinfo = function(name,x,y) {
 	this.cImage = new Image(100, 200);
 	this.crand = Math.round(Math.random()*2)+1;
 	
+	this.dImage = new Image(100, 200);
+	this.drand = Math.round(Math.random()*1)+1;
+	
+	this.eImage = new Image(100, 200);
+	this.erand = Math.round(Math.random()*1)+1;
+
+	this.fImage = new Image(100, 200);
+	this.frand = Math.round(Math.random()*1)+1;
+	
+	this.gImage = new Image(100, 200);
+	this.grand = Math.round(Math.random()*1)+1;
+	
+	this.hImage = new Image(100, 200);
+	this.hrand = Math.round(Math.random()*1)+1;
+	
+	this.iImage = new Image(100, 200);
+	this.irand = Math.round(Math.random()*1)+1;
+	
+	
+	this.checkImage1 = new Image(100, 200);
+	this.checknum1 = 0;
+	
 	this.dist = 100;
+	this.distforcalc = 0;
 	this.state = 0;
 	this.transy = 0;
 	this.transymark = 0;
+	
+	this.maincounter = 0;
+	
+	this.finished = 0;
 }
 
 cinfo.prototype.draw = function() {
@@ -119,14 +142,25 @@ cinfo.prototype.draw = function() {
 		ctx.fillText(this.dist + " km",this.x - transx + 322,this.y - transy + 310);
 		
 		//Dist calc
-		this.dist = Math.pow(Math.pow( (carx + 90) - (this.x + 290) ,2) + Math.pow( (cary) - (this.y + 199) ,2),0.5);
-		this.dist = (this.dist/100).toFixed(1);
+		if (updateDistance > 0){
+			updateDistance++;
+			this.dist = Math.pow(Math.pow( (carx + 90) - (this.x + 290) ,2) + Math.pow( (cary) - (this.y + 199) ,2),0.5);
+			this.distforcalc = Math.pow(Math.pow( (carx + 90) - (this.x + 290) ,2) + Math.pow( (cary) - (this.y + 199) ,2),0.5);
+			this.distforcalc = this.distforcalc/500;
+			this.dist = (this.dist/500).toFixed(1);
+			if (updateDistance > 40){updateDistance = 0;}
+		}
 		
 
 		
 		//CAR
 		ctx.fillStyle = "black";
 		ctx.drawImage(mapcar,carx - transx,cary - transy - 50, 75, 130);
+		
+		//Fuel indicator
+		ctx.drawImage(mapicon,0,0,800,400);
+		console.log(totaldistance*(81/maxfuel));
+		ctx.drawImage(mappointer,totaldistance*(81/maxfuel),0,800,400);
 		
 		//Debug
 		ctx.fillText(this.name.length,this.x - transx+306,this.y - transy+205);
@@ -149,7 +183,7 @@ cinfo.prototype.draw = function() {
 		
 		ctx.drawImage(doorsolo,0 + this.opendoorw/1.7,0,800- this.opendoorw,400);
 		if (opendoor == 1){
-			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 10){fade = 1; sendScene = 2; opendoor = 0;}
+			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 790){fade = 1; sendScene = 2; opendoor = 0;}
 		}
 	
 		this.celebImage.src = 'celebs/' + this.name + '.png';
@@ -181,13 +215,37 @@ cinfo.prototype.draw = function() {
 		ctx.drawImage(this.cImage,0,0 - this.transy,800,400);
 		//STATE 1 ----------------------------------------------------
 		ctx.drawImage(homebg2,0,400 - this.transy,800,400);
-		
+
 		this.celebImage.src = 'celebs/' + this.name + '.png';
 		ctx.drawImage(this.celebImage,15,105 - this.transy + 400,180,240);
 		
 		ctx.drawImage(homeinfo2,0,400 - this.transy,800,400);
 		
+		this.dImage.src = 'home/d' + String(this.drand) + '.png';
+		ctx.drawImage(this.dImage,0,400 - this.transy,800,400);
 		
+		this.eImage.src = 'home/e' + String(this.erand) + '.png';
+		ctx.drawImage(this.eImage,0,400 - this.transy,800,400);
+		
+		this.fImage.src = 'home/f' + String(this.frand) + '.png';
+		ctx.drawImage(this.fImage,0,400 - this.transy,800,400);
+		
+		this.gImage.src = 'home/g' + String(this.grand) + '.png';
+		ctx.drawImage(this.gImage,0,400 - this.transy,800,400);
+		
+		this.hImage.src = 'home/h' + String(this.hrand) + '.png';
+		ctx.drawImage(this.hImage,0,400 - this.transy,800,400);
+		
+		this.iImage.src = 'home/i' + String(this.irand) + '.png';
+		ctx.drawImage(this.iImage,0,400 - this.transy,800,400);
+		
+		//Check marks
+		if (this.checknum1 > 0){
+			this.checkImage1.src = 'home/check' + String(this.checknum1) + '.png';
+			ctx.drawImage(this.checkImage1,0,400 - this.transy,800,400);
+		}
+		//STATE 2 ----------------------------------------------------
+		ctx.drawImage(home3,0,800 - this.transy,800,400);
 	
 	}//End Scene 2 cinfo
 	
@@ -222,6 +280,7 @@ cinfoArray.push(new cinfo("Milana Vayntrub",10,410));
 function clickfunc(){
 
 	if (scene == 0){
+	updateDistance = 1;
 		//UP
 		if (canvasX > 350 && canvasX < 444 && canvasY > 0 && canvasY < 81){locy -= 1;}
 		
@@ -237,10 +296,15 @@ function clickfunc(){
 		//House Select
 		for(var i = 0; i < cinfoArray.length ; i++) {
 			if (canvasX > cinfoArray[i].x - transx + 200 && canvasX < cinfoArray[i].x - transx + 200 + 210 && canvasY > cinfoArray[i].y - transy + 90 && canvasY < cinfoArray[i].y - transy + 290){
-				fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;
-				carx = cinfoArray[i].x + 200; 
-				cary = cinfoArray[i].y + 200;
-				cCurr = i;
+				if (cinfoArray[i].finished == 1){errormsgshow = 1; errormsg = "ALREADY VISITED!";}
+				else{
+					fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;
+					totaldistance = totaldistance + cinfoArray[i].distforcalc;
+					carx = cinfoArray[i].x + 200; 
+					cary = cinfoArray[i].y + 200;
+					cCurr = i;
+					printout+="\n\n" + cinfoArray[i].name + ": ";
+				}
 			}
 		}
 	}
@@ -251,27 +315,94 @@ function clickfunc(){
 	}
 	
 	if (scene == 2){
-		//Chose foreplay
-		if (canvasX > 245 && canvasX < 430 && canvasY > 20 && canvasY < 364){
-			if (cinfoArray[cCurr].arand == 1){printout+="\n\n" + "Foreplay: under the table blowjob";}
-			if (cinfoArray[cCurr].arand == 2){printout+="\n\n" + "Foreplay: 69";}
-			if (cinfoArray[cCurr].arand == 3){printout+="\n\n" + "Foreplay: handjob";}
-			cinfoArray[cCurr].state = 1;
-		}
+		if (cinfoArray[cCurr].transy == 0){
+			//Choose foreplay
+			if (canvasX > 245 && canvasX < 430 && canvasY > 20 && canvasY < 364){
+				if (cinfoArray[cCurr].arand == 1){printout+="\n\n" + "Foreplay: under the table blowjob";}
+				if (cinfoArray[cCurr].arand == 2){printout+="\n\n" + "Foreplay: 69";}
+				if (cinfoArray[cCurr].arand == 3){printout+="\n\n" + "Foreplay: handjob";}
+				printout+="\n\n";
+				cinfoArray[cCurr].state = 1; 
+			}
+			
+			if (canvasX > 430 && canvasX < 611 && canvasY > 20 && canvasY < 364){
+				if (cinfoArray[cCurr].brand == 1){printout+="\n\n" + "Foreplay: Lap Dance";}
+				if (cinfoArray[cCurr].brand == 2){printout+="\n\n" + "Foreplay: Tit Fuck";}
+				if (cinfoArray[cCurr].brand == 3){printout+="\n\n" + "Foreplay: Thigh Job";}
+				printout+="\n\n";
+				cinfoArray[cCurr].state = 1;
+			}
+			
+			if (canvasX > 611 && canvasX < 792 && canvasY > 20 && canvasY < 364){
+				if (cinfoArray[cCurr].crand == 1){printout+="\n\n" + "Foreplay: Naked Cuddling";}
+				if (cinfoArray[cCurr].crand == 2){printout+="\n\n" + "Foreplay: Footjob";}
+				if (cinfoArray[cCurr].crand == 3){printout+="\n\n" + "Foreplay: Sloppy Blowjob";}
+				printout+="\n\n";
+				cinfoArray[cCurr].state = 1;
+			}
+		}//end state 0
 		
-		if (canvasX > 430 && canvasX < 611 && canvasY > 20 && canvasY < 364){
-			if (cinfoArray[cCurr].brand == 1){printout+="\n\n" + "Foreplay: Lap Dance";}
-			if (cinfoArray[cCurr].brand == 2){printout+="\n\n" + "Foreplay: Tit Fuck";}
-			if (cinfoArray[cCurr].brand == 3){printout+="\n\n" + "Foreplay: Thigh Job";}
-			cinfoArray[cCurr].state = 1;
-		}
+		if (cinfoArray[cCurr].transy == 400){
+			//d
+			if (canvasX > 203 && canvasX < 400 && canvasY > 60 && canvasY < 233){
+				if (cinfoArray[cCurr].drand == 1){printout+="Cowgirl & ";}
+				if (cinfoArray[cCurr].drand == 2){printout+="Reverse Cowgirl & ";}
+				cinfoArray[cCurr].checknum1 = 1;
+				cinfoArray[cCurr].maincounter+=1; if (cinfoArray[cCurr].maincounter > 1){printout = printout.slice(0,-2); cinfoArray[cCurr].state = 2;}
+			}
+			
+			//e
+			if (canvasX > 400 && canvasX < 600 && canvasY > 60 && canvasY < 233){
+				if (cinfoArray[cCurr].erand == 1){printout+="Doggystyle & ";}
+				if (cinfoArray[cCurr].erand == 2){printout+="Standing Doggy & ";}
+				cinfoArray[cCurr].checknum1 = 2;
+				cinfoArray[cCurr].maincounter+=1; if (cinfoArray[cCurr].maincounter > 1){printout = printout.slice(0,-2); cinfoArray[cCurr].state = 2;}
+			}
+			
+			//f
+			if (canvasX > 600 && canvasX < 795 && canvasY > 60 && canvasY < 233){
+				if (cinfoArray[cCurr].erand == 1){printout+="Missionary & ";}
+				if (cinfoArray[cCurr].erand == 2){printout+="Pronebone & ";}
+				cinfoArray[cCurr].checknum1 = 3;
+				cinfoArray[cCurr].maincounter+=1; if (cinfoArray[cCurr].maincounter > 1){printout = printout.slice(0,-2); cinfoArray[cCurr].state = 2;}
+			}
+			
+			//g
+			if (canvasX > 203 && canvasX < 400 && canvasY > 235 && canvasY < 400){
+				if (cinfoArray[cCurr].grand == 1){printout+="Anal & ";}
+				if (cinfoArray[cCurr].grand == 2){printout+="Hands tied facefuck & ";}
+				cinfoArray[cCurr].checknum1 = 4;
+				cinfoArray[cCurr].maincounter+=1; if (cinfoArray[cCurr].maincounter > 1){printout = printout.slice(0,-2); cinfoArray[cCurr].state = 2;}
+			}
+			
+			//h
+			if (canvasX > 400 && canvasX < 600 && canvasY > 235 && canvasY < 400){
+				if (cinfoArray[cCurr].hrand == 1){printout+="Wheelbarrow & ";}
+				if (cinfoArray[cCurr].hrand == 2){printout+="Hot Seat & ";}
+				cinfoArray[cCurr].checknum1 = 5;
+				cinfoArray[cCurr].maincounter+=1; if (cinfoArray[cCurr].maincounter > 1){printout = printout.slice(0,-2); cinfoArray[cCurr].state = 2;}
+			}
+			
+			//i
+			if (canvasX > 600 && canvasX < 795 && canvasY > 235 && canvasY < 400){
+				if (cinfoArray[cCurr].irand == 1){printout+="Amazon & ";}
+				if (cinfoArray[cCurr].irand == 2){printout+="Bent Spoon & ";}
+				cinfoArray[cCurr].checknum1 = 6;
+				cinfoArray[cCurr].maincounter+=1; if (cinfoArray[cCurr].maincounter > 1){printout = printout.slice(0,-2); cinfoArray[cCurr].state = 2;}
+			}
 		
-		if (canvasX > 611 && canvasX < 792 && canvasY > 20 && canvasY < 364){
-			if (cinfoArray[cCurr].crand == 1){printout+="\n\n" + "Foreplay: Naked Cuddling";}
-			if (cinfoArray[cCurr].crand == 2){printout+="\n\n" + "Foreplay: Footjob";}
-			if (cinfoArray[cCurr].crand == 3){printout+="\n\n" + "Foreplay: Sloppy Blowjob";}
-			cinfoArray[cCurr].state = 1;
-		}
+		
+		}//end state 1
+		
+		if (cinfoArray[cCurr].transy == 800){
+			//Cum on tits
+			if (canvasX > 7 && canvasX < 263 && canvasY > 100 && canvasY < 380){printout+="\n\nCum on tits"; fade = 1; sendScene = 0; cinfoArray[cCurr].finished = 1;}
+			//Cum on belly
+			if (canvasX > 270 && canvasX < 530 && canvasY > 100 && canvasY < 380){printout+="\n\nCum on belly"; fade = 1; sendScene = 0; cinfoArray[cCurr].finished = 1;}
+			//Cum on face
+			if (canvasX > 535 && canvasX < 790 && canvasY > 100 && canvasY < 380){printout+="\n\nCum on face"; fade = 1; sendScene = 0; cinfoArray[cCurr].finished = 1;}
+
+		}//end state 2
 	
 	}
 	
@@ -281,7 +412,7 @@ function clickfunc(){
 
 var myVar = setInterval(move, 20);
 
-var scene = 2; 
+var scene = 0; 
 var points = 10;
 
 var transx = 0;
@@ -308,11 +439,14 @@ var errortextsize = 30;
 
 var opendoor = 0;
 
-var carx = 0;
-var cary = 0;
+var carx = 511;
+var cary = 174;
 
+var updateDistance = 1;
 
 var cCurr = 0;
+var totaldistance = 0;
+var maxfuel = 10;
 
 function move() {
 
@@ -339,7 +473,7 @@ ctx.font = "20px Arial"; ctx.fillStyle = "white"; ctx.textAlign = "left";
 ctx.fillText("X: " + canvasX,4,420);
 ctx.fillText("Y: " + canvasY,3,440);
 
-ctx.fillText("shiftX: " + shiftX,220,420);
+ctx.fillText("transy: " + cinfoArray[cCurr].transy,220,420);
 ctx.fillText("shiftY: " + shiftY,220,440);
 
 ctx.fillText("Scene: " + scene,80,420);
@@ -347,6 +481,18 @@ ctx.fillText("Points: " + points,80,440);
 
 ctx.fillText("sendName: " + sendName,350,420);
 ctx.fillText("sendScene: " + sendScene,350,440);
+
+ctx.fillText("cCurr: " + cCurr,4,470);
+ctx.fillText("updateDistance: " + updateDistance,80,470);
+
+ctx.fillText("carx: " + carx,260,470);
+ctx.fillText("cary: " + cary,260,490);
+
+ctx.fillText("locx: " + locx,360,470);
+ctx.fillText("locy: " + locy,360,490);
+
+ctx.fillText("totaldistance: " + totaldistance.toFixed(2),500,470);
+
 
 document.getElementById("demo").innerHTML = printout; 
 
@@ -406,10 +552,14 @@ if (fade == 2){brightFac -= 20;
 <img id="mappopup"  style="display:none; visibility:hidden;" src="map/popup.png" alt="">
 <img id="mapcar"  style="display:none; visibility:hidden;" src="map/car.png" alt="">
 
+<img id="mapicon"  style="display:none; visibility:hidden;" src="map/icon.png" alt="">
+<img id="mappointer"  style="display:none; visibility:hidden;" src="map/pointer.png" alt="">
+
 <img id="homebg"  style="display:none; visibility:hidden;" src="home/bg.png" alt="">
 <img id="homeinfo"  style="display:none; visibility:hidden;" src="home/info.png" alt="">
 <img id="homebg2"  style="display:none; visibility:hidden;" src="home/bg2.png" alt="">
 <img id="homeinfo2"  style="display:none; visibility:hidden;" src="home/info2.png" alt="">
+<img id="home3"  style="display:none; visibility:hidden;" src="home/home3.png" alt="">
 
 <img id="doorbg"  style="display:none; visibility:hidden;" src="door/bg.png" alt="">
 <img id="doorwrapper"  style="display:none; visibility:hidden;" src="door/wrapper.png" alt="">
