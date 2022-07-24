@@ -84,11 +84,18 @@ var cinfo = function(name,x,y) {
 	this.txtImage = new Image(100, 200);
 	
 	this.aImage = new Image(100, 200);
-	this.arand = Math.round(Math.random()*1)+1;
+	this.arand = Math.round(Math.random()*2)+1;
+	
 	this.bImage = new Image(100, 200);
+	this.brand = Math.round(Math.random()*2)+1;
+	
 	this.cImage = new Image(100, 200);
+	this.crand = Math.round(Math.random()*2)+1;
 	
 	this.dist = 100;
+	this.state = 0;
+	this.transy = 0;
+	this.transymark = 0;
 }
 
 cinfo.prototype.draw = function() {
@@ -156,25 +163,49 @@ cinfo.prototype.draw = function() {
 	}//End Scene 1 cinfo
 	
 	if (scene == 2 && sendName == this.name){
-		ctx.drawImage(homebg,0,0,800,400);
+		//STATE 0 ----------------------------------------------------
+		ctx.drawImage(homebg,0,0 - this.transy,800,400);
 		
 		this.celebImage.src = 'celebs/' + this.name + '.png';
-		ctx.drawImage(this.celebImage,4,91,230,307);
+		ctx.drawImage(this.celebImage,4,91 - this.transy,230,307);
 		
-		ctx.drawImage(homeinfo,0,0,800,400);
+		ctx.drawImage(homeinfo,0,0 - this.transy,800,400);
 		
 		this.aImage.src = 'home/a' + String(this.arand) + '.png';
-		ctx.drawImage(this.aImage,0,0,800,400);
+		ctx.drawImage(this.aImage,0,0 - this.transy,800,400);
 		
-		this.bImage.src = 'home/b1.png';
-		ctx.drawImage(this.bImage,0,0,800,400);
+		this.bImage.src = 'home/b' + String(this.brand) + '.png';
+		ctx.drawImage(this.bImage,0,0 - this.transy,800,400);
 		
-		this.cImage.src = 'home/c1.png';
-		ctx.drawImage(this.cImage,0,0,800,400);
+		this.cImage.src = 'home/c' + String(this.crand) + '.png';
+		ctx.drawImage(this.cImage,0,0 - this.transy,800,400);
+		//STATE 1 ----------------------------------------------------
+		ctx.drawImage(homebg2,0,400 - this.transy,800,400);
+		
+		this.celebImage.src = 'celebs/' + this.name + '.png';
+		ctx.drawImage(this.celebImage,15,105 - this.transy + 400,180,240);
+		
+		ctx.drawImage(homeinfo2,0,400 - this.transy,800,400);
+		
 		
 	
 	}//End Scene 2 cinfo
-}
+	
+	
+	//Smooth Scroll
+	this.transymark = this.state*400;
+
+	if (this.transy < this.transymark){
+		if (this.transymark - this.transy <= 1){this.transy = this.transymark;}
+		else{this.transy+=(this.transymark-this.transy)/5;}
+	}
+		
+	if (this.transy > this.transymark){
+		if (this.transy - this.transymark <= 1){this.transy = this.transymark;}
+		else{this.transy-=(this.transy-this.transymark)/5;}
+	}
+	
+}//End cinfo
 
 
 var mapArray = [];
@@ -209,6 +240,7 @@ function clickfunc(){
 				fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;
 				carx = cinfoArray[i].x + 200; 
 				cary = cinfoArray[i].y + 200;
+				cCurr = i;
 			}
 		}
 	}
@@ -216,6 +248,30 @@ function clickfunc(){
 	if (scene == 1){
 		//Open Door
 		if (canvasX > 270 && canvasX < 490 && canvasY > 20 && canvasY < 320){opendoor = 1;}
+	}
+	
+	if (scene == 2){
+		//Chose foreplay
+		if (canvasX > 245 && canvasX < 430 && canvasY > 20 && canvasY < 364){
+			if (cinfoArray[cCurr].arand == 1){printout+="\n\n" + "Foreplay: under the table blowjob";}
+			if (cinfoArray[cCurr].arand == 2){printout+="\n\n" + "Foreplay: 69";}
+			if (cinfoArray[cCurr].arand == 3){printout+="\n\n" + "Foreplay: handjob";}
+			cinfoArray[cCurr].state = 1;
+		}
+		
+		if (canvasX > 430 && canvasX < 611 && canvasY > 20 && canvasY < 364){
+			if (cinfoArray[cCurr].brand == 1){printout+="\n\n" + "Foreplay: Lap Dance";}
+			if (cinfoArray[cCurr].brand == 2){printout+="\n\n" + "Foreplay: Tit Fuck";}
+			if (cinfoArray[cCurr].brand == 3){printout+="\n\n" + "Foreplay: Thigh Job";}
+			cinfoArray[cCurr].state = 1;
+		}
+		
+		if (canvasX > 611 && canvasX < 792 && canvasY > 20 && canvasY < 364){
+			if (cinfoArray[cCurr].crand == 1){printout+="\n\n" + "Foreplay: Naked Cuddling";}
+			if (cinfoArray[cCurr].crand == 2){printout+="\n\n" + "Foreplay: Footjob";}
+			if (cinfoArray[cCurr].crand == 3){printout+="\n\n" + "Foreplay: Sloppy Blowjob";}
+			cinfoArray[cCurr].state = 1;
+		}
 	
 	}
 	
@@ -243,7 +299,7 @@ var fade = 0;
 
 var brightFac = 0; 
 var sendScene = 0;
-var sendName = "";
+var sendName = "Selena Gomez";
 
 var errormsgshow = 0;
 var errorTimer = 0;
@@ -254,6 +310,9 @@ var opendoor = 0;
 
 var carx = 0;
 var cary = 0;
+
+
+var cCurr = 0;
 
 function move() {
 
@@ -349,6 +408,8 @@ if (fade == 2){brightFac -= 20;
 
 <img id="homebg"  style="display:none; visibility:hidden;" src="home/bg.png" alt="">
 <img id="homeinfo"  style="display:none; visibility:hidden;" src="home/info.png" alt="">
+<img id="homebg2"  style="display:none; visibility:hidden;" src="home/bg2.png" alt="">
+<img id="homeinfo2"  style="display:none; visibility:hidden;" src="home/info2.png" alt="">
 
 <img id="doorbg"  style="display:none; visibility:hidden;" src="door/bg.png" alt="">
 <img id="doorwrapper"  style="display:none; visibility:hidden;" src="door/wrapper.png" alt="">
