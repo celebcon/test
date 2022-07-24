@@ -83,6 +83,11 @@ var cinfo = function(name,x,y) {
 	this.celebImage = new Image(100, 200);
 	this.txtImage = new Image(100, 200);
 	
+	this.aImage = new Image(100, 200);
+	this.arand = Math.round(Math.random()*1)+1;
+	this.bImage = new Image(100, 200);
+	this.cImage = new Image(100, 200);
+	
 	this.dist = 100;
 }
 
@@ -137,7 +142,7 @@ cinfo.prototype.draw = function() {
 		
 		ctx.drawImage(doorsolo,0 + this.opendoorw/1.7,0,800- this.opendoorw,400);
 		if (opendoor == 1){
-			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 10){fade = 1; sendScene = 0; opendoor = 0;}
+			this.opendoorw+=(800-this.opendoorw)/10; if (this.opendoorw > 10){fade = 1; sendScene = 2; opendoor = 0;}
 		}
 	
 		this.celebImage.src = 'celebs/' + this.name + '.png';
@@ -149,6 +154,26 @@ cinfo.prototype.draw = function() {
 		ctx.drawImage(this.txtImage,0,0,800,400);
 		
 	}//End Scene 1 cinfo
+	
+	if (scene == 2 && sendName == this.name){
+		ctx.drawImage(homebg,0,0,800,400);
+		
+		this.celebImage.src = 'celebs/' + this.name + '.png';
+		ctx.drawImage(this.celebImage,4,91,230,307);
+		
+		ctx.drawImage(homeinfo,0,0,800,400);
+		
+		this.aImage.src = 'home/a' + String(this.arand) + '.png';
+		ctx.drawImage(this.aImage,0,0,800,400);
+		
+		this.bImage.src = 'home/b1.png';
+		ctx.drawImage(this.bImage,0,0,800,400);
+		
+		this.cImage.src = 'home/c1.png';
+		ctx.drawImage(this.cImage,0,0,800,400);
+		
+	
+	}//End Scene 2 cinfo
 }
 
 
@@ -194,12 +219,13 @@ function clickfunc(){
 	
 	}
 	
+	
 
 }//End clickfunc
 
 var myVar = setInterval(move, 20);
 
-var scene = 0; 
+var scene = 2; 
 var points = 10;
 
 var transx = 0;
@@ -217,7 +243,7 @@ var fade = 0;
 
 var brightFac = 0; 
 var sendScene = 0;
-var sendName = "";
+var sendName = "Selena Gomez";
 
 var errormsgshow = 0;
 var errorTimer = 0;
@@ -320,6 +346,9 @@ if (fade == 2){brightFac -= 20;
 <img id="maparrows"  style="display:none; visibility:hidden;" src="map/arrows.png" alt="">
 <img id="mappopup"  style="display:none; visibility:hidden;" src="map/popup.png" alt="">
 <img id="mapcar"  style="display:none; visibility:hidden;" src="map/car.png" alt="">
+
+<img id="homebg"  style="display:none; visibility:hidden;" src="home/bg.png" alt="">
+<img id="homeinfo"  style="display:none; visibility:hidden;" src="home/info.png" alt="">
 
 <img id="doorbg"  style="display:none; visibility:hidden;" src="door/bg.png" alt="">
 <img id="doorwrapper"  style="display:none; visibility:hidden;" src="door/wrapper.png" alt="">
