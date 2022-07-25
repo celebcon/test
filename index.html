@@ -173,13 +173,13 @@ cinfo.prototype.draw = function() {
 		//ctx.fillText(this.name.length,this.x - transx+106,this.y - transy+105);
 		//ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 100,this.y - transy + 45,120,120);
 		
-			//Car mark
-			//ctx.fillStyle = "red";
-			//ctx.fillRect(carx - transx - 20,cary - transy,15,15);
+		//Car mark
+		//ctx.fillStyle = "red";
+		//ctx.fillRect(carx - transx - 20,cary - transy,15,15);
 			
-			//Center of pic mark
-			ctx.fillStyle = "blue";
-			ctx.fillRect(this.x - transx + 147,this.y - transy + 90,15,15);
+		//Center of pic mark
+		//ctx.fillStyle = "blue";
+		//ctx.fillRect(this.x - transx + 147,this.y - transy + 90,15,15);
 
 
 		
@@ -278,9 +278,11 @@ var cinfoArray = [];
 
 mapArray.push(new map(0));
 
-var manualArray = ["Selena Gomez","Scarlett Johansson","Ana de Armas","Milana Vayntrub","Miranda Kerr",
-				  "Emma Watson","Alice Eve","Margot Robbie","Peyton List","Victoria Justice",
-				  "Cher Lloyd","Diane Guerrero","Freya Allan","Kelly Rohrbach","Madelaine Petsch"];
+var manualArray = ["Abigail Breslin","Abigail Spencer","Adrianne Palicki","Aimee Carrero",
+				   "Alejandra Guilmant","Alex Morgan","Alexandra Daddario","Alexis Knapp",
+				   "Alexis Ren","Alice Eve","Alicia Keys","Alison Brie","Alyson Hannigan",
+				   "Amanda Cerny","Amanda Michalka","Amanda Seyfried","Amber Rose",
+				   "Amy Adams","Ana de Armas","Anna Akana","Anna Camp","Anna Faris"];
 
 for(var i = 0; i < 40 ; i++) {
     var arrayrand1 = Math.round(Math.random()*(manualArray.length-1));
@@ -310,6 +312,8 @@ cinfoArray.push(new cinfo(manualArray[10],131 - 100 + 800,280 - 45));
 cinfoArray.push(new cinfo(manualArray[11],148-100 + 800,42-45));
 cinfoArray.push(new cinfo(manualArray[12],663-100+800,12-45));
 cinfoArray.push(new cinfo(manualArray[13],598-100+800,244-45));
+cinfoArray.push(new cinfo(manualArray[14],127-100+800,168-45+400));
+cinfoArray.push(new cinfo(manualArray[15],590-100+800,66-45+400));
 
 //cinfoArray.push(new cinfo(manualArray[10],-100,-45));
 //shift -100, -45
@@ -456,8 +460,8 @@ var transx = 0;
 var transy = 0;
 var transxmark = 0;
 var transymark = 0;
-var locx = 0;
-var locy = 0;
+var locx = 1;
+var locy = 1;
 
 var shiftX = 0;
 var shiftY = 0;
