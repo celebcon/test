@@ -41,8 +41,13 @@ var map = function(scene) {
 
 map.prototype.draw = function() {	
 	if (scene == 0){
-		ctx.drawImage(mapimg,0 - transx,0 - transy,1600,800);
+		ctx.drawImage(mapimg,0 - transx,0 - transy,3200/2,1600/2);
 		ctx.drawImage(maparrows,0,0,800,400);
+		
+		//Map select cooldown
+		if (cooldownSelect > 0){
+			cooldownSelect++; if (cooldownSelect > 30){cooldownSelect = 0;}
+		}
 
 		transymark = locy*400;
 		transxmark = locx*800;
@@ -75,7 +80,7 @@ var cinfo = function(name,x,y) {
 	this.x = x; 
 	this.y = y;
 	this.opendoorw = 0;
-	this.txtwidth = 28;
+	this.txtwidth = 14;
 	this.celebImage = new Image(100, 200);
 	this.txtImage = new Image(100, 200);
 	
@@ -125,21 +130,23 @@ cinfo.prototype.draw = function() {
 	if (scene == 0){
 		//Pic
 		this.celebImage.src = 'celebs/' + this.name + '.png';
-		ctx.drawImage(this.celebImage,this.x - transx + 246,this.y - transy + 122,120,160);
+		ctx.drawImage(this.celebImage,this.x - transx + 123,this.y - transy + 60,120/2,160/2);
 		
 		//Wrapper
-		ctx.drawImage(mappopup,this.x - transx,this.y - transy,800,400);
+		ctx.drawImage(mappopup,this.x - transx,this.y - transy,800/2,400/2);
 		
 		//Text Adjust, Write
-		if (this.name.length == 12){this.txtwidth = 28;}
-		if (this.name.length == 15){this.txtwidth = 25;}
-		if (this.name.length == 18){this.txtwidth = 21;}
+		if (this.name.length == 12){this.txtwidth = 14;}
+		if (this.name.length == 16){this.txtwidth = 12;}
+		if (this.name.length == 15){this.txtwidth = 12.5;}
+		if (this.name.length == 18){this.txtwidth = 10.5;}
+		
 		ctx.font = "700 " + String(this.txtwidth) + "px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
-		ctx.fillText(this.name,this.x - transx+306,this.y - transy+115);
+		ctx.fillText(this.name,this.x - transx+153,this.y - transy+58);
 		
 		//Distance text
-		ctx.font = "700 30px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
-		ctx.fillText(this.dist + " km",this.x - transx + 322,this.y - transy + 310);
+		ctx.font = "700 15px Arial"; ctx.fillStyle = "black"; ctx.textAlign = "center";
+		ctx.fillText(this.dist + " km",this.x - transx + 160,this.y - transy + 155);
 		
 		//Dist calc
 		if (updateDistance > 0){
@@ -155,7 +162,7 @@ cinfo.prototype.draw = function() {
 		
 		//CAR
 		ctx.fillStyle = "black";
-		ctx.drawImage(mapcar,carx - transx,cary - transy - 50, 75, 130);
+		ctx.drawImage(mapcar,carx - transx-10,cary - transy-130, 75/1.5, 130/1.5);
 		
 		//Fuel indicator
 		ctx.drawImage(mapicon,0,0,800,400);
@@ -163,16 +170,16 @@ cinfo.prototype.draw = function() {
 		ctx.drawImage(mappointer,totaldistance*(81/maxfuel),0,800,400);
 		
 		//Debug
-		ctx.fillText(this.name.length,this.x - transx+306,this.y - transy+205);
-		//ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 200,this.y - transy + 90,210,200);
+		//ctx.fillText(this.name.length,this.x - transx+106,this.y - transy+105);
+		//ctx.strokeStyle = "red"; ctx.strokeRect(this.x - transx + 100,this.y - transy + 45,120,120);
 		
 			//Car mark
-			ctx.fillStyle = "red";
-			ctx.fillRect(carx - transx + 90,cary - transy,30,30);
+			//ctx.fillStyle = "red";
+			//ctx.fillRect(carx - transx - 20,cary - transy,15,15);
 			
 			//Center of pic mark
 			ctx.fillStyle = "blue";
-			ctx.fillRect(this.x - transx + 290,this.y - transy + 199,30,30);
+			ctx.fillRect(this.x - transx + 147,this.y - transy + 90,15,15);
 
 
 		
@@ -271,32 +278,63 @@ var cinfoArray = [];
 
 mapArray.push(new map(0));
 
-cinfoArray.push(new cinfo("Selena Gomez",120,-20));
-cinfoArray.push(new cinfo("Scarlett Johansson",920,-5));
-cinfoArray.push(new cinfo("Ana de Armas",900,410));
-cinfoArray.push(new cinfo("Milana Vayntrub",10,410));
+var manualArray = ["Selena Gomez","Scarlett Johansson","Ana de Armas","Milana Vayntrub","Miranda Kerr",
+				  "Emma Watson","Alice Eve","Margot Robbie","Peyton List","Victoria Justice",
+				  "Cher Lloyd","Diane Guerrero","Freya Allan","Kelly Rohrbach","Madelaine Petsch"];
+
+for(var i = 0; i < 40 ; i++) {
+    var arrayrand1 = Math.round(Math.random()*(manualArray.length-1));
+    var arrayrand2 = Math.round(Math.random()*(manualArray.length-1));
+	
+    var storedez = manualArray[arrayrand1]; 
+	var storedez2 = manualArray[arrayrand2];
+	
+	manualArray[arrayrand1] = storedez2;
+	manualArray[arrayrand2] = storedez;
+}
+
+console.log(manualArray);
+
+cinfoArray.push(new cinfo(manualArray[0],70,-10));
+cinfoArray.push(new cinfo(manualArray[1],20,200));
+cinfoArray.push(new cinfo(manualArray[2],590-140,42-50));
+cinfoArray.push(new cinfo(manualArray[3],580-140,280-50));
+cinfoArray.push(new cinfo(manualArray[4],136 - 100,65 + 400 - 45));
+cinfoArray.push(new cinfo(manualArray[5],-100 + 144,-45 + 250 + 400));
+cinfoArray.push(new cinfo(manualArray[6],-100 + 312,-45 + 180 + 400));
+cinfoArray.push(new cinfo(manualArray[7],-100 + 522,-45 + 273 + 400));
+cinfoArray.push(new cinfo(manualArray[8],-100 + 550,-45 + 78 + 400));
+cinfoArray.push(new cinfo(manualArray[9],-100 + 630,-45 + 220 + 400));
+
+cinfoArray.push(new cinfo(manualArray[10],131 - 100 + 800,280 - 45));
+cinfoArray.push(new cinfo(manualArray[11],148-100 + 800,42-45));
+cinfoArray.push(new cinfo(manualArray[12],663-100+800,12-45));
+cinfoArray.push(new cinfo(manualArray[13],598-100+800,244-45));
+
+//cinfoArray.push(new cinfo(manualArray[10],-100,-45));
+//shift -100, -45
+
 
 //for(var i = 0; i < mapArray.length ; i++) {
 function clickfunc(){
-
 	if (scene == 0){
 	updateDistance = 1;
 		//UP
-		if (canvasX > 350 && canvasX < 444 && canvasY > 0 && canvasY < 81){locy -= 1;}
+		if (canvasX > 350 && canvasX < 444 && canvasY > 0 && canvasY < 81){locy -= 1; cooldownSelect = 1;}
 		
 		//Down
-		if (canvasX > 350 && canvasX < 444 && canvasY > 317 && canvasY < 400){locy += 1;}
+		if (canvasX > 350 && canvasX < 444 && canvasY > 317 && canvasY < 400){locy += 1; cooldownSelect = 1;}
 		
 		//Left
-		if (canvasX > 0 && canvasX < 75 && canvasY > 160 && canvasY < 240){locx -= 1;}
+		if (canvasX > 0 && canvasX < 75 && canvasY > 160 && canvasY < 240){locx -= 1; cooldownSelect = 1;}
 		
 		//Right
-		if (canvasX > 720 && canvasX < 800 && canvasY > 160 && canvasY < 240){locx += 1;}
+		if (canvasX > 720 && canvasX < 800 && canvasY > 160 && canvasY < 240){locx += 1; cooldownSelect = 1;}
 		
 		//House Select
 		for(var i = 0; i < cinfoArray.length ; i++) {
-			if (canvasX > cinfoArray[i].x - transx + 200 && canvasX < cinfoArray[i].x - transx + 200 + 210 && canvasY > cinfoArray[i].y - transy + 90 && canvasY < cinfoArray[i].y - transy + 290){
-				if (cinfoArray[i].finished == 1){errormsgshow = 1; errormsg = "ALREADY VISITED!";}
+			if (canvasX > cinfoArray[i].x - transx + 100 && canvasX < cinfoArray[i].x - transx + 100 + 120 && canvasY > cinfoArray[i].y - transy + 45 && canvasY < cinfoArray[i].y - transy + 45 + 120 && cooldownSelect < 1){
+				if (cinfoArray[i].finished == 1){errormsgshow = 1; errormsg = "ALREADY VISITED!";}	 
 				else{
 					fade = 1; sendScene = 1; sendName = cinfoArray[i].name; cinfoArray[i].opendoorw = 0;
 					totaldistance = totaldistance + cinfoArray[i].distforcalc;
@@ -307,7 +345,8 @@ function clickfunc(){
 				}
 			}
 		}
-	}
+
+	}//end scene 0
 	
 	if (scene == 1){
 		//Open Door
@@ -344,7 +383,7 @@ function clickfunc(){
 		
 		if (cinfoArray[cCurr].transy == 400){
 			//d
-			if (canvasX > 203 && canvasX < 400 && canvasY > 60 && canvasY < 233){
+			if (canvasX > 203 && canvasX < 400 && canvasY > 60 && canvasY < 233 && cinfoArray[cCurr].checknum1 != 1){
 				if (cinfoArray[cCurr].drand == 1){printout+="Cowgirl & ";}
 				if (cinfoArray[cCurr].drand == 2){printout+="Reverse Cowgirl & ";}
 				cinfoArray[cCurr].checknum1 = 1;
@@ -352,7 +391,7 @@ function clickfunc(){
 			}
 			
 			//e
-			if (canvasX > 400 && canvasX < 600 && canvasY > 60 && canvasY < 233){
+			if (canvasX > 400 && canvasX < 600 && canvasY > 60 && canvasY < 233 && cinfoArray[cCurr].checknum1 != 2){
 				if (cinfoArray[cCurr].erand == 1){printout+="Doggystyle & ";}
 				if (cinfoArray[cCurr].erand == 2){printout+="Standing Doggy & ";}
 				cinfoArray[cCurr].checknum1 = 2;
@@ -360,7 +399,7 @@ function clickfunc(){
 			}
 			
 			//f
-			if (canvasX > 600 && canvasX < 795 && canvasY > 60 && canvasY < 233){
+			if (canvasX > 600 && canvasX < 795 && canvasY > 60 && canvasY < 233 && cinfoArray[cCurr].checknum1 != 3){
 				if (cinfoArray[cCurr].erand == 1){printout+="Missionary & ";}
 				if (cinfoArray[cCurr].erand == 2){printout+="Pronebone & ";}
 				cinfoArray[cCurr].checknum1 = 3;
@@ -368,7 +407,7 @@ function clickfunc(){
 			}
 			
 			//g
-			if (canvasX > 203 && canvasX < 400 && canvasY > 235 && canvasY < 400){
+			if (canvasX > 203 && canvasX < 400 && canvasY > 235 && canvasY < 400 && cinfoArray[cCurr].checknum1 != 4){
 				if (cinfoArray[cCurr].grand == 1){printout+="Anal & ";}
 				if (cinfoArray[cCurr].grand == 2){printout+="Hands tied facefuck & ";}
 				cinfoArray[cCurr].checknum1 = 4;
@@ -376,7 +415,7 @@ function clickfunc(){
 			}
 			
 			//h
-			if (canvasX > 400 && canvasX < 600 && canvasY > 235 && canvasY < 400){
+			if (canvasX > 400 && canvasX < 600 && canvasY > 235 && canvasY < 400 && cinfoArray[cCurr].checknum1 != 5){
 				if (cinfoArray[cCurr].hrand == 1){printout+="Wheelbarrow & ";}
 				if (cinfoArray[cCurr].hrand == 2){printout+="Hot Seat & ";}
 				cinfoArray[cCurr].checknum1 = 5;
@@ -384,7 +423,7 @@ function clickfunc(){
 			}
 			
 			//i
-			if (canvasX > 600 && canvasX < 795 && canvasY > 235 && canvasY < 400){
+			if (canvasX > 600 && canvasX < 795 && canvasY > 235 && canvasY < 400 && cinfoArray[cCurr].checknum1 != 6){
 				if (cinfoArray[cCurr].irand == 1){printout+="Amazon & ";}
 				if (cinfoArray[cCurr].irand == 2){printout+="Bent Spoon & ";}
 				cinfoArray[cCurr].checknum1 = 6;
@@ -406,8 +445,6 @@ function clickfunc(){
 	
 	}
 	
-	
-
 }//End clickfunc
 
 var myVar = setInterval(move, 20);
@@ -439,8 +476,8 @@ var errortextsize = 30;
 
 var opendoor = 0;
 
-var carx = 511;
-var cary = 174;
+var carx = 320;
+var cary = 200;
 
 var updateDistance = 1;
 
@@ -448,8 +485,9 @@ var cCurr = 0;
 var totaldistance = 0;
 var maxfuel = 10;
 
-function move() {
+var cooldownSelect = 0;
 
+function move() {
 //BG
 ctx.fillStyle = "green";
 ctx.fillRect(0,0, 800, 400);
